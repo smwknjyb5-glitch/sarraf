@@ -1,0 +1,362 @@
+ <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATM جزائري 💰</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+  }
+  .atm-container {
+    background: white;
+    border-radius: 30px;
+    padding: 35px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    max-width: 900px;
+    width: 100%;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 3px solid #667eea;
+    padding-bottom: 15px;
+  }
+  .header h1 {
+    color: #333;
+    font-size: 28px;
+  }
+  .header .flag {
+    font-size: 32px;
+  }
+  .input-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-radius: 15px;
+  }
+  .input-section label {
+    font-weight: bold;
+    color: #555;
+    font-size: 18px;
+  }
+  .input-section .input-display {
+    flex: 1;
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    min-height: 50px;
+    padding: 5px 15px;
+    background: white;
+    border-radius: 10px;
+    border: 2px solid #ddd;
+    direction: ltr;
+    text-align: right;
+  }
+  .input-section .input-display:empty::before {
+    content: "0";
+    color: #ccc;
+  }
+  .main-layout {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+  .numpad {
+    flex: 0 0 280px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .numpad button {
+    padding: 15px;
+    font-size: 22px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    background: #e9ecef;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .numpad button:active {
+    transform: scale(0.94);
+  }
+  .numpad button.num {
+    background: #f1f3f5;
+  }
+  .numpad button.num:hover {
+    background: #dee2e6;
+  }
+  .numpad button.clear {
+    background: #ff6b6b;
+    color: white;
+  }
+  .numpad button.clear:hover {
+    background: #fa5252;
+  }
+  .numpad button.ok {
+    background: #51cf66;
+    color: white;
+  }
+  .numpad button.ok:hover {
+    background: #40c057;
+  }
+  .result-area {
+    flex: 1;
+    min-width: 250px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  .result-area .empty-msg {
+    color: #adb5bd;
+    text-align: center;
+    padding: 40px 0;
+    font-size: 18px;
+  }
+  .result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-bottom: 1px solid #e9ecef;
+  }
+  .result-item:last-child {
+    border-bottom: none;
+  }
+  .result-item .bill-img {
+    width: 80px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    flex-shrink: 0;
+  }
+  .result-item .count {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+  }
+  .result-item .count span {
+    color: #667eea;
+    font-size: 24px;
+  }
+  .total-bills {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 2px solid #dee2e6;
+    text-align: center;
+    color: #495057;
+    font-weight: bold;
+  }
+  @media (max-width: 700px) {
+    .main-layout { flex-direction: column; }
+    .numpad { flex: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="atm-container">
+  <div class="header">
+    <h1>🏧 صراف آلي</h1>
+    <span class="flag">🇩🇿</span>
+  </div>
+
+  <div class="input-section">
+    <label>المبلغ:</label>
+    <div class="input-display" id="inputDisplay"></div>
+  </div>
+
+  <div class="main-layout">
+    <div class="numpad" id="numpad">
+      <!-- سيتم إنشاء الأزرار بواسطة JavaScript -->
+    </div>
+    <div class="result-area" id="resultArea">
+      <div class="empty-msg">💰 أدخل المبلغ واضغط OK</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  تحويل ATM الجزائري من Pygame إلى HTML/JavaScript
+// ============================================================
+
+// ---------- فئات العملة ----------
+const denominations = [2000, 1000, 500, 200, 100, 50, 20, 10, 5, 1];
+
+// ألوان الصور (محاكاة الأوراق النقدية)
+const billColors = {
+  2000: '#4a6fa5',
+  1000: '#6c8c4a',
+  500: '#c0392b',
+  200: '#8e44ad',
+  100: '#27ae60',
+  50: '#f39c12',
+  20: '#2980b9',
+  10: '#e67e22',
+  5: '#7f8c8d',
+  1: '#95a5a6'
+};
+
+// أسماء العملات
+const billNames = {
+  2000: 'ألفان',
+  1000: 'ألف',
+  500: 'خمسمائة',
+  200: 'مئتان',
+  100: 'مائة',
+  50: 'خمسون',
+  20: 'عشرون',
+  10: 'عشرة',
+  5: 'خمسة',
+  1: 'واحد'
+};
+
+// ---------- حالة التطبيق ----------
+let userInput = '';
+let result = null;
+const inputDisplay = document.getElementById('inputDisplay');
+const resultArea = document.getElementById('resultArea');
+
+// ---------- أزرار لوحة الأرقام ----------
+const numbers = ['1','2','3','4','5','6','7','8','9','C','0','OK'];
+const numpad = document.getElementById('numpad');
+
+numbers.forEach(label => {
+  const btn = document.createElement('button');
+  btn.textContent = label;
+
+  if (label === 'C') {
+    btn.className = 'clear';
+  } else if (label === 'OK') {
+    btn.className = 'ok';
+  } else {
+    btn.className = 'num';
+  }
+
+  btn.addEventListener('click', () => handleButton(label));
+  numpad.appendChild(btn);
+});
+
+// ---------- دالة الحساب (نفس منطق Pygame) ----------
+function calculate(amount) {
+  const res = {};
+  let remaining = amount;
+  for (const d of denominations) {
+    const count = Math.floor(remaining / d);
+    if (count > 0) {
+      res[d] = count;
+      remaining %= d;
+    }
+  }
+  return res;
+}
+
+// ---------- معالجة الأزرار ----------
+function handleButton(label) {
+  if (label === 'C') {
+    userInput = '';
+    result = null;
+  } else if (label === 'OK') {
+    if (userInput !== '') {
+      const amount = parseInt(userInput, 10);
+      if (amount > 0) {
+        result = calculate(amount);
+      }
+    }
+  } else {
+    // رقم
+    if (userInput.length < 8) { // حد أقصى 8 أرقام
+      userInput += label;
+    }
+  }
+  updateUI();
+}
+
+// ---------- تحديث الواجهة ----------
+function updateUI() {
+  // تحديث عرض الإدخال
+  inputDisplay.textContent = userInput || '';
+
+  // تحديث منطقة النتائج
+  if (!result || Object.keys(result).length === 0) {
+    resultArea.innerHTML = `<div class="empty-msg">💰 أدخل المبلغ واضغط OK</div>`;
+    return;
+  }
+
+  let html = '';
+  let totalBills = 0;
+
+  for (const [denom, count] of Object.entries(result)) {
+    if (count === 0) continue;
+    const d = parseInt(denom, 10);
+    totalBills += count;
+    const color = billColors[d] || '#888';
+    const name = billNames[d] || d;
+
+    html += `
+      <div class="result-item">
+        <div class="bill-img" style="background:${color};">
+          ${d} دج
+        </div>
+        <div class="count">
+          <span>${count}</span> × ${name}
+        </div>
+      </div>
+    `;
+  }
+
+  html += `
+    <div class="total-bills">
+      مجموع القطع: <span style="color:#667eea;font-size:24px;">${totalBills}</span>
+    </div>
+  `;
+
+  resultArea.innerHTML = html;
+}
+
+// ---------- دعم لوحة المفاتيح ----------
+document.addEventListener('keydown', (e) => {
+  if (e.key >= '0' && e.key <= '9') {
+    handleButton(e.key);
+  } else if (e.key === 'Enter') {
+    handleButton('OK');
+  } else if (e.key === 'Backspace' || e.key === 'Delete') {
+    handleButton('C');
+  }
+});
+
+// ---------- تهيئة الواجهة ----------
+updateUI();
+
+// عرض رسالة ترحيب
+console.log('🏧 ATM جزائري - تم التحويل إلى HTML!');
+</script>
+</body>
+</html>
+
