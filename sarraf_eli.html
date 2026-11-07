@@ -1,362 +1,219 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ATM جزائري 💰</title>
+<title>صراف آلي جزائري 🏧</title>
+<meta property="og:title" content="صراف آلي جزائري 🏧">
+<meta property="og:description" content="أدخل المبلغ بالدينار الجزائري واعرف عدد الأوراق والقطع النقدية">
 <style>
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding: 20px;
-  }
-  .atm-container {
-    background: white;
-    border-radius: 30px;
-    padding: 35px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    max-width: 900px;
-    width: 100%;
-  }
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    border-bottom: 3px solid #667eea;
-    padding-bottom: 15px;
-  }
-  .header h1 {
-    color: #333;
-    font-size: 28px;
-  }
-  .header .flag {
-    font-size: 32px;
-  }
-  .input-section {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 25px;
-    background: #f8f9fa;
-    padding: 15px 20px;
-    border-radius: 15px;
-  }
-  .input-section label {
-    font-weight: bold;
-    color: #555;
-    font-size: 18px;
-  }
-  .input-section .input-display {
-    flex: 1;
-    font-size: 32px;
-    font-weight: bold;
-    color: #333;
-    min-height: 50px;
-    padding: 5px 15px;
-    background: white;
-    border-radius: 10px;
-    border: 2px solid #ddd;
-    direction: ltr;
-    text-align: right;
-  }
-  .input-section .input-display:empty::before {
-    content: "0";
-    color: #ccc;
-  }
-  .main-layout {
-    display: flex;
-    gap: 30px;
-    flex-wrap: wrap;
-  }
-  .numpad {
-    flex: 0 0 280px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
-  .numpad button {
-    padding: 15px;
-    font-size: 22px;
-    font-weight: bold;
-    border: none;
-    border-radius: 12px;
-    background: #e9ecef;
-    color: #333;
-    cursor: pointer;
-    transition: all 0.15s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
-  .numpad button:active {
-    transform: scale(0.94);
-  }
-  .numpad button.num {
-    background: #f1f3f5;
-  }
-  .numpad button.num:hover {
-    background: #dee2e6;
-  }
-  .numpad button.clear {
-    background: #ff6b6b;
-    color: white;
-  }
-  .numpad button.clear:hover {
-    background: #fa5252;
-  }
-  .numpad button.ok {
-    background: #51cf66;
-    color: white;
-  }
-  .numpad button.ok:hover {
-    background: #40c057;
-  }
-  .result-area {
-    flex: 1;
-    min-width: 250px;
-    background: #f8f9fa;
-    border-radius: 15px;
-    padding: 15px;
-    max-height: 400px;
-    overflow-y: auto;
-  }
-  .result-area .empty-msg {
-    color: #adb5bd;
-    text-align: center;
-    padding: 40px 0;
-    font-size: 18px;
-  }
-  .result-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px;
-    border-bottom: 1px solid #e9ecef;
-  }
-  .result-item:last-child {
-    border-bottom: none;
-  }
-  .result-item .bill-img {
-    width: 80px;
-    height: 48px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
-    flex-shrink: 0;
-  }
-  .result-item .count {
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-  }
-  .result-item .count span {
-    color: #667eea;
-    font-size: 24px;
-  }
-  .total-bills {
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 2px solid #dee2e6;
-    text-align: center;
-    color: #495057;
-    font-weight: bold;
-  }
-  @media (max-width: 700px) {
-    .main-layout { flex-direction: column; }
-    .numpad { flex: 1; }
-  }
+:root{--bg1:#0b3d2e;--bg2:#145a43;--gold:#f5c542;--card:#fff;--ink:#1d2b26;--soft:#eef3f0;--line:#d5e0da}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;
+  font-family:'Segoe UI',Tahoma,Arial,sans-serif;color:var(--ink);
+  background:radial-gradient(circle at 20% 10%,#1f7a5a 0,transparent 45%),linear-gradient(135deg,var(--bg1),#06231a)}
+.atm{width:100%;max-width:940px;background:var(--card);border-radius:28px;padding:28px;
+  box-shadow:0 25px 70px rgba(0,0,0,.45);border-top:8px solid var(--gold)}
+.header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:20px}
+.header h1{font-size:clamp(22px,4vw,30px);color:var(--bg1)}
+.header small{display:block;color:#6b7d75;font-size:14px;margin-top:4px}
+.fbbtn{border:0;background:#1877f2;color:#fff;padding:10px 16px;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;font-family:inherit}
+.fbbtn:hover{background:#0f63d0}
+.screen{background:linear-gradient(180deg,#0e2f25,#0a2019);border-radius:18px;padding:16px 20px;margin-bottom:22px;
+  display:flex;align-items:center;gap:14px;box-shadow:inset 0 3px 12px rgba(0,0,0,.6)}
+.screen label{color:#9fd8bf;font-weight:bold;font-size:18px}
+.screen .disp{flex:1;direction:ltr;text-align:right;font:bold 38px/1.2 'Courier New',monospace;color:#6dffb3;
+  text-shadow:0 0 12px rgba(109,255,179,.6);min-height:46px}
+.screen .disp.empty{color:#2f6b52;text-shadow:none}
+.screen .unit{color:var(--gold);font-weight:bold;font-size:20px}
+.main{display:flex;gap:26px;flex-wrap:wrap}
+.pad{flex:0 0 290px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:start}
+.pad button{padding:16px 0;font-size:23px;font-weight:bold;border:0;border-radius:14px;cursor:pointer;
+  background:var(--soft);color:var(--ink);box-shadow:0 4px 0 var(--line);transition:.1s;font-family:inherit}
+.pad button:hover{background:#e2ebe6}
+.pad button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+.pad .del{background:#ffd6a5;box-shadow:0 4px 0 #e8b678}
+.pad .clear{background:#ff7b7b;color:#fff;box-shadow:0 4px 0 #d85a5a}
+.pad .ok{background:#2fbf71;color:#fff;box-shadow:0 4px 0 #1f9a57}
+.result{flex:1;min-width:260px;background:var(--soft);border-radius:18px;padding:14px;max-height:430px;overflow-y:auto}
+.empty-msg{color:#8aa096;text-align:center;padding:60px 0;font-size:18px}
+.sec{font-weight:bold;color:var(--bg2);margin:6px 4px 8px;font-size:15px}
+.item{display:flex;align-items:center;gap:14px;padding:8px;border-bottom:1px solid var(--line);animation:pop .35s ease both}
+.item:last-of-type{border-bottom:0}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.note{width:96px;height:52px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:bold;font-size:15px;border:2px solid rgba(255,255,255,.55);
+  box-shadow:0 3px 8px rgba(0,0,0,.25),inset 0 0 0 3px rgba(255,255,255,.12);text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.coin{width:52px;height:52px;border-radius:50%;margin:0 22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-weight:bold;font-size:15px;color:#4a3b00;background:radial-gradient(circle at 35% 30%,#fff3b0,#e0b12e 70%,#a37f12);
+  border:3px double #8a6a0a;box-shadow:0 3px 6px rgba(0,0,0,.3)}
+.cnt{font-size:19px}
+.cnt b{color:var(--bg2);font-size:26px}
+.total{margin-top:10px;padding-top:12px;border-top:2px dashed var(--line);text-align:center;font-weight:bold;color:#3d544a}
+.total b{color:var(--bg2);font-size:24px}
+@media(max-width:700px){.main{flex-direction:column}.pad{flex:1}.atm{padding:18px}.header small{display:none}}
 </style>
 </head>
 <body>
-<div class="atm-container">
+<div class="atm">
   <div class="header">
-    <h1>🏧 صراف آلي</h1>
-    <span class="flag">🇩🇿</span>
+    <div><h1>🏧 صراف آلي جزائري 🇩🇿</h1><small>أدخل المبلغ بالدينار واعرف عدد الأوراق والقطع</small></div>
+    <button class="fbbtn" id="fbBtn" type="button">📷 صورة للفيسبوك</button>
   </div>
 
-  <div class="input-section">
+  <div class="screen">
     <label>المبلغ:</label>
-    <div class="input-display" id="inputDisplay"></div>
+    <div class="disp empty" id="disp">0</div>
+    <span class="unit">دج</span>
   </div>
 
-  <div class="main-layout">
-    <div class="numpad" id="numpad">
-      <!-- سيتم إنشاء الأزرار بواسطة JavaScript -->
-    </div>
-    <div class="result-area" id="resultArea">
-      <div class="empty-msg">💰 أدخل المبلغ واضغط OK</div>
-    </div>
+  <div class="main">
+    <div class="pad" id="pad"></div>
+    <div class="result" id="result"></div>
   </div>
 </div>
 
 <script>
-// ============================================================
-//  تحويل ATM الجزائري من Pygame إلى HTML/JavaScript
-// ============================================================
+'use strict';
+// الأوراق النقدية: 2000 / 1000 / 500 / 200 — القطع المعدنية: 100 / 50 / 20 / 10 / 5 / 2 / 1
+const DENOMS = [2000, 1000, 500, 200, 100, 50, 20, 10, 5, 2, 1];
+const NOTE_MIN = 200;
+const COLORS = {2000:'#3f6fb5',1000:'#5a8f3c',500:'#c0432f',200:'#8a4fb0'};
+const NAMES = {2000:'ألفان',1000:'ألف',500:'خمسمائة',200:'مئتان',100:'مائة',50:'خمسون',20:'عشرون',10:'عشرة',5:'خمسة',2:'اثنان',1:'واحد'};
+const MAX_DIGITS = 8;
 
-// ---------- فئات العملة ----------
-const denominations = [2000, 1000, 500, 200, 100, 50, 20, 10, 5, 1];
-
-// ألوان الصور (محاكاة الأوراق النقدية)
-const billColors = {
-  2000: '#4a6fa5',
-  1000: '#6c8c4a',
-  500: '#c0392b',
-  200: '#8e44ad',
-  100: '#27ae60',
-  50: '#f39c12',
-  20: '#2980b9',
-  10: '#e67e22',
-  5: '#7f8c8d',
-  1: '#95a5a6'
-};
-
-// أسماء العملات
-const billNames = {
-  2000: 'ألفان',
-  1000: 'ألف',
-  500: 'خمسمائة',
-  200: 'مئتان',
-  100: 'مائة',
-  50: 'خمسون',
-  20: 'عشرون',
-  10: 'عشرة',
-  5: 'خمسة',
-  1: 'واحد'
-};
-
-// ---------- حالة التطبيق ----------
-let userInput = '';
+let input = '';
 let result = null;
-const inputDisplay = document.getElementById('inputDisplay');
-const resultArea = document.getElementById('resultArea');
 
-// ---------- أزرار لوحة الأرقام ----------
-const numbers = ['1','2','3','4','5','6','7','8','9','C','0','OK'];
-const numpad = document.getElementById('numpad');
+const $disp = document.getElementById('disp');
+const $result = document.getElementById('result');
+const $pad = document.getElementById('pad');
 
-numbers.forEach(label => {
-  const btn = document.createElement('button');
-  btn.textContent = label;
+const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
-  if (label === 'C') {
-    btn.className = 'clear';
-  } else if (label === 'OK') {
-    btn.className = 'ok';
-  } else {
-    btn.className = 'num';
-  }
+// ---- لوحة الأزرار ----
+['1','2','3','4','5','6','7','8','9','⌫','0','C'].forEach(k => addKey(k));
+addKey('OK', true);
+function addKey(label, wide) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.textContent = label;
+  b.className = label === 'C' ? 'clear' : label === '⌫' ? 'del' : label === 'OK' ? 'ok' : '';
+  if (wide) b.style.gridColumn = '1 / -1';
+  b.addEventListener('click', () => press(label));
+  $pad.appendChild(b);
+}
 
-  btn.addEventListener('click', () => handleButton(label));
-  numpad.appendChild(btn);
-});
-
-// ---------- دالة الحساب (نفس منطق Pygame) ----------
+// ---- الحساب ----
 function calculate(amount) {
-  const res = {};
-  let remaining = amount;
-  for (const d of denominations) {
-    const count = Math.floor(remaining / d);
-    if (count > 0) {
-      res[d] = count;
-      remaining %= d;
-    }
+  const res = [];
+  let rest = amount;
+  for (const d of DENOMS) {
+    const c = Math.floor(rest / d);
+    if (c > 0) { res.push([d, c]); rest -= c * d; }
   }
   return res;
 }
 
-// ---------- معالجة الأزرار ----------
-function handleButton(label) {
-  if (label === 'C') {
-    userInput = '';
-    result = null;
-  } else if (label === 'OK') {
-    if (userInput !== '') {
-      const amount = parseInt(userInput, 10);
-      if (amount > 0) {
-        result = calculate(amount);
-      }
-    }
-  } else {
-    // رقم
-    if (userInput.length < 8) { // حد أقصى 8 أرقام
-      userInput += label;
-    }
+// ---- التحكم ----
+function press(k) {
+  if (k === 'C') { input = ''; result = null; }
+  else if (k === '⌫') { input = input.slice(0, -1); result = null; }
+  else if (k === 'OK') {
+    const amount = parseInt(input, 10);
+    result = amount > 0 ? { amount, list: calculate(amount) } : null;
+  } else if (input.length < MAX_DIGITS && !(input === '' && k === '0')) {
+    input += k;
+    result = null; // النتيجة القديمة لم تعد صالحة
   }
-  updateUI();
+  render();
 }
 
-// ---------- تحديث الواجهة ----------
-function updateUI() {
-  // تحديث عرض الإدخال
-  inputDisplay.textContent = userInput || '';
+function render() {
+  $disp.textContent = input ? fmt(input) : '0';
+  $disp.classList.toggle('empty', !input);
 
-  // تحديث منطقة النتائج
-  if (!result || Object.keys(result).length === 0) {
-    resultArea.innerHTML = `<div class="empty-msg">💰 أدخل المبلغ واضغط OK</div>`;
+  if (!result) {
+    $result.innerHTML = '<div class="empty-msg">💰 أدخل المبلغ واضغط OK</div>';
     return;
   }
-
+  const notes = result.list.filter(([d]) => d >= NOTE_MIN);
+  const coins = result.list.filter(([d]) => d < NOTE_MIN);
+  const row = ([d, c]) => {
+    const pic = d >= NOTE_MIN
+      ? `<div class="note" style="background:linear-gradient(135deg,${COLORS[d]},#0006 220%),${COLORS[d]}">${d} دج</div>`
+      : `<div class="coin">${d}</div>`;
+    return `<div class="item">${pic}<div class="cnt"><b>${c}</b> × ${NAMES[d]}</div></div>`;
+  };
+  const sum = a => a.reduce((s, [, c]) => s + c, 0);
   let html = '';
-  let totalBills = 0;
-
-  for (const [denom, count] of Object.entries(result)) {
-    if (count === 0) continue;
-    const d = parseInt(denom, 10);
-    totalBills += count;
-    const color = billColors[d] || '#888';
-    const name = billNames[d] || d;
-
-    html += `
-      <div class="result-item">
-        <div class="bill-img" style="background:${color};">
-          ${d} دج
-        </div>
-        <div class="count">
-          <span>${count}</span> × ${name}
-        </div>
-      </div>
-    `;
-  }
-
-  html += `
-    <div class="total-bills">
-      مجموع القطع: <span style="color:#667eea;font-size:24px;">${totalBills}</span>
-    </div>
-  `;
-
-  resultArea.innerHTML = html;
+  if (notes.length) html += `<div class="sec">💵 الأوراق النقدية</div>` + notes.map(row).join('');
+  if (coins.length) html += `<div class="sec">🪙 القطع المعدنية</div>` + coins.map(row).join('');
+  html += `<div class="total">${fmt(result.amount)} دج = <b>${sum(notes)}</b> ورقة + <b>${sum(coins)}</b> قطعة</div>`;
+  $result.innerHTML = html;
 }
 
-// ---------- دعم لوحة المفاتيح ----------
-document.addEventListener('keydown', (e) => {
-  if (e.key >= '0' && e.key <= '9') {
-    handleButton(e.key);
-  } else if (e.key === 'Enter') {
-    handleButton('OK');
-  } else if (e.key === 'Backspace' || e.key === 'Delete') {
-    handleButton('C');
-  }
+// ---- لوحة المفاتيح ----
+document.addEventListener('keydown', e => {
+  let k = null;
+  if (/^[0-9]$/.test(e.key)) k = e.key;
+  else if (e.key === 'Enter') k = 'OK';
+  else if (e.key === 'Backspace') k = '⌫';
+  else if (e.key === 'Delete' || e.key === 'Escape') k = 'C';
+  if (k) { e.preventDefault(); press(k); }
 });
 
-// ---------- تهيئة الواجهة ----------
-updateUI();
+// ---- صورة الفيسبوك (1200×630) ----
+document.getElementById('fbBtn').addEventListener('click', () => {
+  const W = 1200, H = 630;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d');
+  const font = 'Segoe UI, Tahoma, Arial, sans-serif';
 
-// عرض رسالة ترحيب
-console.log('🏧 ATM جزائري - تم التحويل إلى HTML!');
+  let g = x.createLinearGradient(0, 0, W, H);
+  g.addColorStop(0, '#145a43'); g.addColorStop(1, '#06231a');
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#f5c542'; x.fillRect(0, 0, W, 14);
+
+  // شاشة
+  x.fillStyle = '#0a2019'; x.beginPath(); x.roundRect(90, 70, 1020, 150, 28); x.fill();
+  x.strokeStyle = '#f5c542'; x.lineWidth = 4; x.stroke();
+  x.textBaseline = 'middle';
+  x.fillStyle = '#6dffb3'; x.shadowColor = '#6dffb3'; x.shadowBlur = 20;
+  x.font = `bold 84px "Courier New", monospace`; x.textAlign = 'left'; x.direction = 'ltr';
+  x.fillText('18 750 DA', 140, 145);
+  x.shadowBlur = 0;
+
+  // عنوان
+  x.direction = 'rtl'; x.textAlign = 'center';
+  x.fillStyle = '#fff'; x.font = `bold 78px ${font}`;
+  x.fillText('🏧 صراف آلي جزائري', W / 2, 300);
+  x.fillStyle = '#f5c542'; x.font = `bold 38px ${font}`;
+  x.fillText('أدخل المبلغ… واعرف عدد الأوراق والقطع', W / 2, 375);
+
+  // أوراق
+  [[2000,'#3f6fb5'],[1000,'#5a8f3c'],[500,'#c0432f'],[200,'#8a4fb0']].forEach(([d, col], i) => {
+    const bx = 150 + i * 235, by = 430;
+    x.save(); x.translate(bx + 100, by + 60); x.rotate((i - 1.5) * 0.07);
+    x.fillStyle = col; x.strokeStyle = 'rgba(255,255,255,.6)'; x.lineWidth = 4;
+    x.beginPath(); x.roundRect(-100, -60, 200, 120, 14); x.fill(); x.stroke();
+    x.fillStyle = '#fff'; x.font = `bold 40px ${font}`; x.direction = 'ltr';
+    x.fillText(d + ' دج', 0, 0); x.restore();
+  });
+  // قطعة
+  x.fillStyle = '#e0b12e'; x.strokeStyle = '#8a6a0a'; x.lineWidth = 6;
+  x.beginPath(); x.arc(1060, 520, 60, 0, 7); x.fill(); x.stroke();
+  x.fillStyle = '#4a3b00'; x.font = `bold 44px ${font}`; x.fillText('100', 1060, 520);
+
+  c.toBlob(b => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(b); a.download = 'atm-facebook.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }, 'image/png');
+});
+
+render();
 </script>
 </body>
 </html>
-
